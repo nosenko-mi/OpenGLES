@@ -1,6 +1,7 @@
 package com.example.opengles_1
 
 import android.opengl.GLES20
+import android.opengl.Matrix
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -29,9 +30,15 @@ class Square {
     val color = floatArrayOf(0.63671875f, 0.76953125f, 0.22265625f, 1.0f)
 
     private val vertexShaderCode =
-        "attribute vec4 vPosition;" +
+    // This matrix member variable provides a hook to manipulate
+        // the coordinates of the objects that use this vertex shader
+        "uniform mat4 uMVPMatrix;" +
+                "attribute vec4 vPosition;" +
                 "void main() {" +
-                "  gl_Position = vPosition;" +
+                // the matrix must be included as a modifier of gl_Position
+                // Note that the uMVPMatrix factor *must be first* in order
+                // for the matrix multiplication product to be correct.
+                "  gl_Position = uMVPMatrix * vPosition;" +
                 "}"
 
     private val fragmentShaderCode =
@@ -43,13 +50,13 @@ class Square {
 
     // Use to access and set the view transformation
     private var vPMatrixHandle: Int = 0
-
+    var mModelMatrix = FloatArray(16)
     private var mProgram: Int
 
     init {
         val vertexShader: Int = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode)
         val fragmentShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode)
-
+        Matrix.setIdentityM(mModelMatrix, 0)
         // create empty OpenGL ES Program
         mProgram = GLES20.glCreateProgram().also {
 

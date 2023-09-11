@@ -32,33 +32,31 @@ class MyGLRenderer : GLSurfaceView.Renderer {
         // Redraw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
 
-        mSquare.draw()
-        mTriangle.draw()
+        // Set the camera position (View matrix)
+        Matrix.setLookAtM(viewMatrix, 0, 0f, 0f, 2f, 0f, 0f, 0f, 0f, 1.0f, 0.0f)
 
-//        lr 2 ->
+        // Calculate the projection and view transformation
+        Matrix.multiplyMM(vPMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
 
-//        // Set the camera position (View matrix)
-//        Matrix.setLookAtM(viewMatrix, 0, 0f, 0f, 3f, 0f, 0f, 0f, 0f, 1.0f, 0.0f)
-//
-//        // Calculate the projection and view transformation
-//        Matrix.multiplyMM(vPMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
+        Matrix.translateM(mSquare.mModelMatrix, 0, 0f, -0.3f, 0f)
+        Matrix.multiplyMM(scratch, 0, vPMatrix, 0, mSquare.mModelMatrix, 0)
 
-//        mSquare.draw(vPMatrix)
+        mSquare.draw(scratch)
 
-//        Matrix.translateM(mTriangle.mModelMatrix, 0, 0.5f, 0f, 0f)
-//        Matrix.multiplyMM(scratch, 0, vPMatrix, 0, mTriangle.mModelMatrix, 0)
+        Matrix.translateM(mTriangle.mModelMatrix, 0, 0f, 0.3f, 0f)
+        Matrix.multiplyMM(scratch, 0, vPMatrix, 0, mTriangle.mModelMatrix, 0)
 
-//        mTriangle.draw(vPMatrix)
+        mTriangle.draw(scratch)
+
     }
 
     override fun onSurfaceChanged(unused: GL10, width: Int, height: Int) {
         GLES20.glViewport(0, 0, width, height)
 
-//        lr 2 ->
-//        val ratio: Float = width.toFloat() / height.toFloat()
-//
-////        // this projection matrix is applied to object coordinates
-////        // in the onDrawFrame() method
-//        Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1f, 1f, 1f, 10f)
+        val ratio: Float = width.toFloat() / height.toFloat()
+
+//        // this projection matrix is applied to object coordinates
+//        // in the onDrawFrame() method
+        Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1f, 1f, 1f, 5f)
     }
 }
