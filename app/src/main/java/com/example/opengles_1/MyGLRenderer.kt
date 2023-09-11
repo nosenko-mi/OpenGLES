@@ -1,6 +1,7 @@
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.opengl.Matrix
+import android.os.SystemClock
 import com.example.opengles_1.Square
 import com.example.opengles_1.Triangle
 import javax.microedition.khronos.egl.EGLConfig
@@ -15,7 +16,7 @@ class MyGLRenderer : GLSurfaceView.Renderer {
     private val vPMatrix = FloatArray(16)
     private val projectionMatrix = FloatArray(16)
     private val viewMatrix = FloatArray(16)
-
+    private val rotationMatrix = FloatArray(16)
 
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
         // Set the background frame color
@@ -29,6 +30,8 @@ class MyGLRenderer : GLSurfaceView.Renderer {
 
     override fun onDrawFrame(unused: GL10) {
         val scratch = FloatArray(16)
+        val triangleMatrix = FloatArray(16)
+        val squareMatrix = FloatArray(16)
         // Redraw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
 
@@ -38,13 +41,32 @@ class MyGLRenderer : GLSurfaceView.Renderer {
         // Calculate the projection and view transformation
         Matrix.multiplyMM(vPMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
 
-        Matrix.translateM(mSquare.mModelMatrix, 0, 0f, -0.3f, 0f)
-        Matrix.multiplyMM(scratch, 0, vPMatrix, 0, mSquare.mModelMatrix, 0)
+        // Square
+
+        // Create a rotation transformation for the square
+        val time = SystemClock.uptimeMillis() % 4000L
+        var angle = 0.090f * time.toInt()
+        Matrix.setRotateM(rotationMatrix, 0, angle, 0f, 0f, -1.0f)
+
+        vPMatrix.copyInto(squareMatrix)
+        Matrix.translateM(squareMatrix, 0, 0f, -0.8f, 0f)
+        Matrix.multiplyMM(scratch, 0, squareMatrix, 0, mSquare.mModelMatrix, 0)
+        // Combine the rotation matrix with the projection and camera view
+        // Note that the vPMatrix factor *must be first* in order
+        // for the matrix multiplication product to be correct.
+        Matrix.multiplyMM(scratch, 0, scratch, 0, rotationMatrix, 0)
 
         mSquare.draw(scratch)
 
-        Matrix.translateM(mTriangle.mModelMatrix, 0, 0f, 0.3f, 0f)
-        Matrix.multiplyMM(scratch, 0, vPMatrix, 0, mTriangle.mModelMatrix, 0)
+        // Triangle
+
+        angle = 0.090f * time.toInt()
+        Matrix.setRotateM(rotationMatrix, 0, angle, 1f, 0f, -1.0f)
+
+        vPMatrix.copyInto(triangleMatrix)
+        Matrix.translateM(triangleMatrix, 0, 0f, 0.8f, 0f)
+        Matrix.multiplyMM(scratch, 0, triangleMatrix, 0, mTriangle.mModelMatrix, 0)
+        Matrix.multiplyMM(scratch, 0, scratch, 0, rotationMatrix, 0)
 
         mTriangle.draw(scratch)
 
