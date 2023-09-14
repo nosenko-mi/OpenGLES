@@ -1,6 +1,5 @@
 package com.example.opengles_1
 
-import MyGLSurfaceView
 import android.opengl.GLSurfaceView
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

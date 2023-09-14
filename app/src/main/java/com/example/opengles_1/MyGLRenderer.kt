@@ -9,6 +9,11 @@ import javax.microedition.khronos.opengles.GL10
 
 class MyGLRenderer : GLSurfaceView.Renderer {
 
+    // he renderer code is running on a separate thread from the main user interface thread
+    // of your application, you must declare this public variable as volatile
+    @Volatile
+    var angle: Float = 0f
+
     private lateinit var mTriangle: Triangle
     private lateinit var mSquare: Square
 
@@ -37,15 +42,11 @@ class MyGLRenderer : GLSurfaceView.Renderer {
 
         // Set the camera position (View matrix)
         Matrix.setLookAtM(viewMatrix, 0, 0f, 0f, 2f, 0f, 0f, 0f, 0f, 1.0f, 0.0f)
-
         // Calculate the projection and view transformation
         Matrix.multiplyMM(vPMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
 
         // Square
 
-        // Create a rotation transformation for the square
-        val time = SystemClock.uptimeMillis() % 4000L
-        var angle = 0.090f * time.toInt()
         Matrix.setRotateM(rotationMatrix, 0, angle, 0f, 0f, -1.0f)
 
         vPMatrix.copyInto(squareMatrix)
@@ -60,7 +61,6 @@ class MyGLRenderer : GLSurfaceView.Renderer {
 
         // Triangle
 
-        angle = 0.090f * time.toInt()
         Matrix.setRotateM(rotationMatrix, 0, angle, 1f, 0f, -1.0f)
 
         vPMatrix.copyInto(triangleMatrix)
