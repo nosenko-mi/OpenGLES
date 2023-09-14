@@ -47,26 +47,17 @@ class MyGLRenderer : GLSurfaceView.Renderer {
 
         // Square
 
-        Matrix.setRotateM(rotationMatrix, 0, angle, 0f, 0f, -1.0f)
-
         vPMatrix.copyInto(squareMatrix)
         Matrix.translateM(squareMatrix, 0, 0f, -0.8f, 0f)
         Matrix.multiplyMM(scratch, 0, squareMatrix, 0, mSquare.mModelMatrix, 0)
-        // Combine the rotation matrix with the projection and camera view
-        // Note that the vPMatrix factor *must be first* in order
-        // for the matrix multiplication product to be correct.
-        Matrix.multiplyMM(scratch, 0, scratch, 0, rotationMatrix, 0)
 
         mSquare.draw(scratch)
 
         // Triangle
 
-        Matrix.setRotateM(rotationMatrix, 0, angle, 1f, 0f, -1.0f)
-
         vPMatrix.copyInto(triangleMatrix)
         Matrix.translateM(triangleMatrix, 0, 0f, 0.8f, 0f)
         Matrix.multiplyMM(scratch, 0, triangleMatrix, 0, mTriangle.mModelMatrix, 0)
-        Matrix.multiplyMM(scratch, 0, scratch, 0, rotationMatrix, 0)
 
         mTriangle.draw(scratch)
 
