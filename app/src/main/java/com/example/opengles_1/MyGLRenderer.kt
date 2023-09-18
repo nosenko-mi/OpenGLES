@@ -1,13 +1,14 @@
+package com.example.opengles_1
+
+import android.content.Context
+import android.graphics.BitmapFactory
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import android.opengl.Matrix
-import android.os.SystemClock
-import com.example.opengles_1.Square
-import com.example.opengles_1.Triangle
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
-class MyGLRenderer : GLSurfaceView.Renderer {
+class MyGLRenderer(private val context: Context) : GLSurfaceView.Renderer {
 
     // he renderer code is running on a separate thread from the main user interface thread
     // of your application, you must declare this public variable as volatile
@@ -21,16 +22,17 @@ class MyGLRenderer : GLSurfaceView.Renderer {
     private val vPMatrix = FloatArray(16)
     private val projectionMatrix = FloatArray(16)
     private val viewMatrix = FloatArray(16)
-    private val rotationMatrix = FloatArray(16)
 
     override fun onSurfaceCreated(unused: GL10, config: EGLConfig) {
         // Set the background frame color
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
+        GLES20.glClearColor(0.2f, 0.2f, 0.2f, 1.0f)
 
-        // initialize a triangle
-        mTriangle = Triangle()
+        val squareTextureBitmap = BitmapFactory.decodeStream(context.assets.open("models/leonardo.png"))
+
         // initialize a square
         mSquare = Square()
+        mSquare.setTexture(squareTextureBitmap)
+
     }
 
     override fun onDrawFrame(unused: GL10) {
@@ -52,14 +54,6 @@ class MyGLRenderer : GLSurfaceView.Renderer {
         Matrix.multiplyMM(scratch, 0, squareMatrix, 0, mSquare.mModelMatrix, 0)
 
         mSquare.draw(scratch)
-
-        // Triangle
-
-        vPMatrix.copyInto(triangleMatrix)
-        Matrix.translateM(triangleMatrix, 0, 0f, 0.8f, 0f)
-        Matrix.multiplyMM(scratch, 0, triangleMatrix, 0, mTriangle.mModelMatrix, 0)
-
-        mTriangle.draw(scratch)
 
     }
 
