@@ -38,12 +38,12 @@ class MyGLRenderer : GLSurfaceView.Renderer {
         // Calculate the projection and view transformation
         Matrix.multiplyMM(vPMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
 
-        Matrix.translateM(mSquare.mModelMatrix, 0, 0f, -0.3f, 0f)
+        Matrix.translateM(mSquare.mModelMatrix, 0, 0f, -0.6f, 0f)
         Matrix.multiplyMM(scratch, 0, vPMatrix, 0, mSquare.mModelMatrix, 0)
 
         mSquare.draw(scratch)
 
-        Matrix.translateM(mTriangle.mModelMatrix, 0, 0f, 0.3f, 0f)
+        Matrix.translateM(mTriangle.mModelMatrix, 0, 0f, 0.6f, 0f)
         Matrix.multiplyMM(scratch, 0, vPMatrix, 0, mTriangle.mModelMatrix, 0)
 
         mTriangle.draw(scratch)
