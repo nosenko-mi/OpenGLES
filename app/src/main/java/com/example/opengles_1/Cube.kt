@@ -59,12 +59,13 @@ class Cube(
         getLocations()
         prepareData()
         bindData()
-//        createViewMatrix()
-        Matrix.setIdentityM(mModelMatrix, 0)
+        Matrix.setIdentityM(this.mModelMatrix, 0)
         Log.d("Cube", "programId: $programId")
     }
 
     fun draw(mvpMatrix: FloatArray) {
+        GLES20.glEnableVertexAttribArray(aPositionLocation)
+
         GLES20.glUniformMatrix4fv(uMatrixLocation, 1, false, mvpMatrix, 0)
 
 //        Matrix.setIdentityM(mvpMatrix, 0)
@@ -72,6 +73,8 @@ class Cube(
         // вращение
 //        setModelMatrix()
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, 36, GLES20.GL_UNSIGNED_BYTE, indexArray)
+        GLES20.glDisableVertexAttribArray(aPositionLocation)
+
     }
 
     private fun prepareData() {

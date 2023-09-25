@@ -9,6 +9,7 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
 
+// uses the same approach as cube -> wrong textures
 class Pyramid(
     private val context: Context
 ) {
