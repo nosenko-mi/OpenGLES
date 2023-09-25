@@ -162,7 +162,6 @@ class Pyramid(
     }
 
     private fun bindData() {
-        // координаты вершин
         vertexData!!.position(0)
         GLES20.glVertexAttribPointer(
             aPositionLocation,
@@ -174,12 +173,8 @@ class Pyramid(
         )
         GLES20.glEnableVertexAttribArray(aPositionLocation)
 
-        // помещаем текстуру в target CUBE_MAP юнита 0
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
-
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture)
-
-        // юнит текстуры
         GLES20.glUniform1i(uTextureUnitLocation, 0)
 
     }

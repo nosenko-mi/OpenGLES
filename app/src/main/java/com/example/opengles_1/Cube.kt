@@ -23,10 +23,7 @@ class Cube(
 
     private var programId = 0
 
-    private val mProjectionMatrix = FloatArray(16)
-    private val mViewMatrix = FloatArray(16)
     var mModelMatrix = FloatArray(16)
-    private val mMatrix = FloatArray(16)
 
     private var texture = 0
 
@@ -68,25 +65,22 @@ class Cube(
 
         GLES20.glUniformMatrix4fv(uMatrixLocation, 1, false, mvpMatrix, 0)
 
-//        Matrix.setIdentityM(mvpMatrix, 0)
         GLES20.glUseProgram(programId)
-        // вращение
-//        setModelMatrix()
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, 36, GLES20.GL_UNSIGNED_BYTE, indexArray)
         GLES20.glDisableVertexAttribArray(aPositionLocation)
 
     }
 
     private fun prepareData() {
-        val vertices = floatArrayOf( // вершины куба
-            -1f, 1f, 1f,  // верхняя левая ближняя
-            1f, 1f, 1f,  // верхняя правая ближняя
-            -1f, -1f, 1f,  // нижняя левая ближняя
-            1f, -1f, 1f,  // нижняя правая ближняя
-            -1f, 1f, -1f,  // верхняя левая дальняя
-            1f, 1f, -1f,  // верхняя правая дальняя
-            -1f, -1f, -1f,  // нижняя левая дальняя
-            1f, -1f, -1f // нижняя правая дальняя
+        val vertices = floatArrayOf(
+            -1f, 1f, 1f,
+            1f, 1f, 1f,
+            -1f, -1f, 1f,
+            1f, -1f, 1f,
+            -1f, 1f, -1f,
+            1f, 1f, -1f,
+            -1f, -1f, -1f,
+            1f, -1f, -1f
         )
         vertexData = ByteBuffer.allocateDirect(vertices.size * 4).run {
             order(ByteOrder.nativeOrder())
@@ -97,18 +91,17 @@ class Cube(
         }
         indexArray = ByteBuffer.allocateDirect(36)
             .put(
-                byteArrayOf( // грани куба
-                    // ближняя
+                byteArrayOf(
                     1, 3, 0,
-                    0, 3, 2,  // дальняя
+                    0, 3, 2,
                     4, 6, 5,
-                    5, 6, 7,  // левая
+                    5, 6, 7,
                     0, 2, 4,
-                    4, 2, 6,  // правая
+                    4, 2, 6,
                     5, 7, 1,
-                    1, 7, 3,  // верхняя
+                    1, 7, 3,
                     5, 1, 4,
-                    4, 1, 0,  // нижняя
+                    4, 1, 0,
                     6, 2, 7,
                     7, 2, 3
                 )
@@ -148,25 +141,15 @@ class Cube(
     }
 
     private fun bindData() {
-        // координаты вершин
         vertexData!!.position(0)
         GLES20.glVertexAttribPointer(
             aPositionLocation, POSITION_COUNT, GLES20.GL_FLOAT,
             false, 0, vertexData
         )
         GLES20.glEnableVertexAttribArray(aPositionLocation)
-
-        // помещаем текстуру в target CUBE_MAP юнита 0
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
         GLES20.glBindTexture(GLES20.GL_TEXTURE_CUBE_MAP, texture)
 
-        // юнит текстуры
         GLES20.glUniform1i(uTextureUnitLocation, 0)
-    }
-
-    private fun bindMatrix() {
-        Matrix.multiplyMM(mMatrix, 0, mViewMatrix, 0, mModelMatrix, 0)
-        Matrix.multiplyMM(mMatrix, 0, mProjectionMatrix, 0, mMatrix, 0)
-        GLES20.glUniformMatrix4fv(uMatrixLocation, 1, false, mMatrix, 0)
     }
 }
